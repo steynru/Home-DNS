@@ -1,0 +1,17 @@
+$TTL 2d
+
+$ORIGIN 70.10.in.arpa.
+
+@             IN     SOA    int.thdc.tech. info.thdc.tech (
+                            2023062500     ; serial
+                            12h            ; refresh
+                            15m            ; retry
+                            3w             ; expire
+                            2h )           ; minimum TTL
+;
+; name servers - NS Records
+              IN     NS     ns1.int.thdc.tech.
+              IN     NS     ns2.int.thdc.tech.
+;
+; name servers - PTR Records
+12.100  IN     PTR    thdcvcsa01.int.thdc.tech.

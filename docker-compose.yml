@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  bind9:
+    container_name: SHomeDNS01-Bind9
+    image: ubuntu/bind9:latest
+    environment:
+      - "BIND9_USER=root"
+      - "TZ=Europe/Zurich"
+    ports:
+      - "30053:53/tcp"
+      - "30053:53/udp"
+    volumes:
+      - ./config:/etc/bind
+      - ./cache:/var/cache/bind
+      - ./records:/var/lib/bind
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - dnsnet
+
+  pihole:
+    container_name: SHomeDNS01-PiHole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "80:80/tcp"
+    environment:
+      TZ: "TZ=Europe/Zurich"
+      WEBPASSWORD: "ChangeME!"
+      PIHOLE_DNS_: "bind9"
+    volumes:
+      - "./etc-pihole:/etc/pihole"
+      - "./etc-dnsmasq.d:/etc/dnsmasq.d"
+    restart: unless-stopped
+    networks:
+      - dnsnet
+    depends_on:
+      - bind9
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  dnsnet:
+      ipam:
+         driver: default
